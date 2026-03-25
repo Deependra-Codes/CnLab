@@ -33,24 +33,33 @@ export default function NetworkPacket({ start, end, active, color = "#ffffff", s
         setProgress(newProgress)
         // Update position along curve
         const point = curve.getPoint(newProgress)
+        const tangent = curve.getTangent(newProgress)
+        
         meshRef.current.position.copy(point)
+        // Orient the envelope to face the direction of flight
+        meshRef.current.lookAt(point.clone().add(tangent))
       } else if (!active) {
           setVisible(false)
       }
-      
-      // Pulse effect
-      meshRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 15) * 0.2)
     }
   })
 
   if (!visible) return null
 
   return (
-    <mesh ref={meshRef} position={start}>
-      <sphereGeometry args={[0.2, 16, 16]} />
-      <meshBasicMaterial color={color} transparent opacity={0.9} />
+    <group ref={meshRef} position={start}>
+      {/* Envelope Body */}
+      <mesh>
+        <boxGeometry args={[0.8, 0.5, 0.05]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
+      </mesh>
+      {/* Envelope Flap */}
+      <mesh position={[0, 0.25, 0.03]} rotation={[0, 0, Math.PI / 4]}>
+        <boxGeometry args={[0.55, 0.55, 0.02]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.2} />
+      </mesh>
       {/* Light emission from packet */}
-      <pointLight color={color} intensity={10} distance={3} decay={2} />
-    </mesh>
+      <pointLight color={color} intensity={8} distance={5} decay={2} />
+    </group>
   )
 }
