@@ -30,7 +30,11 @@ export default function NetworkScene({ step }: { step: number }) {
   return (
     <group>
       {/* --- NODES --- */}
+<<<<<<< HEAD
       <ComputerNode position={POSITIONS.SENDER_MUA} label="Chintu MUA" isSender={true} step={step} />
+=======
+      <ComputerNode position={POSITIONS.SENDER_MUA} label="Alice MUA" isSender={true} />
+>>>>>>> origin/main
       <ServerNode position={POSITIONS.SENDER_MTA} label="Sender MTA Gateway" type="MTA" />
       
       {/* The DNS Hierarchy */}
