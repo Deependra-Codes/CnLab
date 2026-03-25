@@ -6,20 +6,20 @@ import * as THREE from 'three'
 
 // Humanized educational conversations explaining the networking phases
 const SIMULATION_STEPS = [
-  { id: 0, name: "System Idle", logs: ["Welcome to the Interactive E-Mail Simulator!", "This 3D project visualizes exactly how an email travels across the internet.", "Waiting for Alice to click 'Send' on her email to Bob..."] },
-  { id: 1, name: "TCP 3-Way Handshake", logs: ["> Hi Sender MTA! Alice wrote an email to Bob. Can I send it to you?", "< Sure thing, Alice's MUA! But first, let's open a reliable TCP connection.", "The Mail User Agent (MUA) and Mail Transfer Agent (MTA) perform a 3-way handshake."] },
+  { id: 0, name: "Project Presentation", logs: ["Welcome to my project presentation!", "Topic: 'E-mail System, its structure, Components, working and protocols used.'", "Let's click 'Advance Timeline' to send an email from Chintu to Bob!"] },
+  { id: 1, name: "TCP 3-Way Handshake", logs: ["> Hi Sender MTA! Chintu wrote an email to Bob. Can I send it to you?", "< Sure thing, Chintu's MUA! But first, let's open a reliable TCP connection.", "The Mail User Agent (MUA) and Mail Transfer Agent (MTA) perform a 3-way handshake."] },
   { id: 2, name: "STARTTLS Security", logs: ["> Wait, we shouldn't send passwords in plain text! Do you support TLS encryption?", "< I do! Let me send you my cryptographic certificate.", "The connection secures itself. All further communication is now safely encrypted!"] },
-  { id: 3, name: "SMTP Submission", logs: ["> Here are my login credentials. The email is from Alice, going to Bob.", "< Credentials accepted. I've placed the email into my outgoing delivery queue.", "The Sender MTA takes responsibility for delivering the email across the internet."] },
+  { id: 3, name: "SMTP Submission", logs: ["> Here are my login credentials. The email is from Chintu, going to Bob.", "< Credentials accepted. I've placed the email into my outgoing delivery queue.", "The Sender MTA takes responsibility for delivering the email across the internet."] },
   { id: 4, name: "DNS Root Query", logs: ["> Hey Root DNS (.)! I need to deliver an email to 'other.com'. Do you know their IP address?", "< I don't route specific domains. But I manage Top Level Domains. Ask the '.com' TLD Server!"] },
   { id: 5, name: "DNS TLD Query", logs: ["> Hello '.com' TLD Server! Root sent me. Do you know where 'other.com' is?", "< I only track which provider registered the domain. Go ask their specific Authoritative Nameserver!"] },
   { id: 6, name: "DNS Authoritative Query", logs: ["> Hey Authoritative DNS! What is the Mail Exchange (MX) record for 'other.com'?", "< Found it! To deliver mail to 'other.com', you must connect to the IP address of 'mail.other.com'.", "The Sender MTA finally knows exactly where on the internet Bob's email server lives!"] },
   { id: 7, name: "Routing: Hop 1", logs: ["> I'm packaging the email into IP data packets and firing them into the internet backbone!", "The packets enter the vast web of global Internet Exchange Providers (IXPs)."] },
   { id: 8, name: "Routing: Hop 2", logs: ["> Receiving packets from Router 1. Calculating the fastest BGP route across the ocean...", "< Route locked. Forwarding optical frames to the destination network's edge router!"] },
   { id: 9, name: "Routing: Hop 3", logs: ["> Packet arriving at the destination ISP gateway.", "The internet routing completes, and the packets finally arrive at Bob's destination mail server."] },
-  { id: 10, name: "Receiver MTA Handshake", logs: ["> Hello Receiver MTA! I have an incoming email from Alice's domain. Can we talk?", "< Greetings Sender MTA. Let's establish a secure Server-to-Server encrypted link first!"] },
-  { id: 11, name: "Security Validation", logs: ["< Before I accept this, let me run background checks to ensure you aren't sending spam.", "< Checking Sender Policy Framework (SPF)... PASS! You are an authorized sender.", "< Checking DKIM Digital Signature... PASS! The email wasn't tampered with.", "< Security checks cleared! I will accept Alice's email."] },
+  { id: 10, name: "Receiver MTA Handshake", logs: ["> Hello Receiver MTA! I have an incoming email from Chintu's domain. Can we talk?", "< Greetings Sender MTA. Let's establish a secure Server-to-Server encrypted link first!"] },
+  { id: 11, name: "Security Validation", logs: ["< Before I accept this, let me run background checks to ensure you aren't sending spam.", "< Checking Sender Policy Framework (SPF)... PASS! You are an authorized sender.", "< Checking DKIM Digital Signature... PASS! The email wasn't tampered with.", "< Security checks cleared! I will accept Chintu's email."] },
   { id: 12, name: "MDA Spooling", logs: ["> Handing the email off to you, Mail Delivery Agent (MDA). Keep it safe!", "< Thanks MTA! I'm taking the network packet and saving it to Bob's local hard drive storage."] },
-  { id: 13, name: "IMAP Fetch", logs: ["> Hey local storage! I'm Bob's phone app. Any new emails for me today?", "< Yes Bob! You have one unread email from Alice. Here is the payload!", "The MUA uses IMAP to securely download the message. The journey is complete!"] },
+  { id: 13, name: "IMAP Fetch", logs: ["> Hey local storage! I'm Bob's phone app. Any new emails for me today?", "< Yes Bob! You have one unread email from Chintu. Here is the payload!", "The MUA uses IMAP to securely download the message. The journey is complete!"] },
 ]
 
 const getActiveNodes = (step: number) => {
@@ -72,9 +72,11 @@ function CameraRig({ step, controlsRef }: { step: number, controlsRef: any }) {
         targetCamPos.current.set(midX, midY + Math.max(45, dist * 1.2), midZ + 15)
       }
     } else {
-      // Idle / Overview shot
-      targetFocus.current.set(-5, 0, 0)
-      targetCamPos.current.set(-5, 30, 60)
+      // Step 0 Phase - Zoom directly into Chintu's Screen for the Presentation Intro!
+      const start = POSITIONS.SENDER_MUA
+      targetFocus.current.set(start[0], start[1] + 1, start[2])
+      // Camera parked closely facing the monitor screen directly to showcase the topic!
+      targetCamPos.current.set(start[0], start[1] + 1.5, start[2] + 4)
     }
   }, [step])
 
@@ -155,7 +157,7 @@ function App() {
               position={
                 activeNodes 
                   ? (isReceiverSpeaking ? (activeNodes as any)[1] : (activeNodes as any)[0])
-                  : [0, 8, 0] // Center ambient hologram position during System Idle overview
+                  : [POSITIONS.SENDER_MUA[0], POSITIONS.SENDER_MUA[1] + 3.5, POSITIONS.SENDER_MUA[2]] // Hover over Chintu's computer for presentation intro
               } 
               center 
               zIndexRange={[100, 0]} 

@@ -1,8 +1,6 @@
 import { useRef } from 'react'
 import { Group } from 'three'
 import { Html } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-
 export default function ComputerNode({ position, label, isSender }: { position: [number, number, number], label: string, isSender: boolean }) {
   const group = useRef<Group>(null)
   
@@ -31,16 +29,29 @@ export default function ComputerNode({ position, label, isSender }: { position: 
       {/* Glowing Screen Area */}
       <mesh position={[0, 0.2, 0.06]}>
         <planeGeometry args={[1.3, 0.8]} />
-        <meshBasicMaterial color={screenColor} toneMapped={false} />
+        <meshBasicMaterial color={isSender ? "#020617" : screenColor} toneMapped={false} />
+        {isSender && (
+          <Html transform position={[0, 0, 0.01]} scale={0.08} center distanceFactor={1.2}>
+            <div className="w-[180px] h-[110px] bg-gradient-to-b from-blue-950/90 to-black rounded flex flex-col items-center justify-center p-2 text-center border-t border-blue-500/50 shadow-inner select-none pointer-events-none">
+               <div className="text-[13px] font-black text-white leading-tight mb-1">E-mail System</div>
+               <div className="text-[9px] font-semibold text-blue-300 leading-snug">
+                 Structure, Components,<br/>Working & Protocols
+               </div>
+               <div className="mt-3 flex gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]"></div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]"></div>
+               </div>
+            </div>
+          </Html>
+        )}
+        {!isSender && [-0.2, 0, 0.2].map((y, i) => (
+          <mesh key={i} position={[-0.2, y, 0.01]}>
+            <planeGeometry args={[0.5, 0.05]} />
+            <meshBasicMaterial color="#ffffff" opacity={0.6} transparent />
+          </mesh>
+        ))}
       </mesh>
-      {/* Screen "Code" lines placeholder */}
-      {[-0.2, 0, 0.2].map((y, i) => (
-        <mesh key={i} position={[-0.2, y + 0.2, 0.07]}>
-          <planeGeometry args={[0.5, 0.05]} />
-          <meshBasicMaterial color="#ffffff" opacity={0.6} transparent />
-        </mesh>
-      ))}
-
       {/* Keyboard Deck */}
       <mesh position={[0, -0.65, 0.4]} rotation={[-0.1, 0, 0]}>
         <boxGeometry args={[1.2, 0.05, 0.5]} />
